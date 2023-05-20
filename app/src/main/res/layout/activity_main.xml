@@ -4,15 +4,421 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/background_color"
     tools:context=".MainActivity">
 
-    <TextView
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideLineHorizontal010"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.1" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideLineHorizontal040"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.4" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideLineHorizontal050"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.5" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideLineHorizontal060"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.6" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideLineHorizontal080"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.8" />
+
+    <View
+        android:id="@+id/linearLayoutTopBar"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/status_bar"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@id/guideLineHorizontal010"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/textViewWeather"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/antique_olive_std_nord_italic"
+        android:text="@string/weather"
+        android:textColor="@color/weather_color"
+        android:textSize="@dimen/weather_textSize"
+        app:layout_constraintBottom_toTopOf="@id/guideLineHorizontal010"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/imageViewSearch"
+        android:layout_width="@dimen/icon_search_size"
+        android:layout_height="@dimen/icon_search_size"
+        android:layout_marginEnd="@dimen/margin_medium"
+        android:src="@drawable/ic_search"
+        android:tint="@color/weather_color"
+        app:layout_constraintBottom_toTopOf="@id/guideLineHorizontal010"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/imageViewWeatherInterpretationImage"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scaleType="centerCrop"
+
+        app:layout_constraintBottom_toTopOf="@id/guideLineHorizontal040"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/guideLineHorizontal010"
+        tools:src="@drawable/clear_sky" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/textViewDegreesCelsius"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/big_text_size"
+
+        app:layout_constraintBottom_toTopOf="@id/guideLineHorizontal050"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/guideLineHorizontal040"
+        tools:text="32° c" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/textViewCity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/standard_text_size"
+
+        app:layout_constraintBottom_toTopOf="@id/textViewWeatherInterpretationString"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/guideLineHorizontal050"
+        tools:text="Vinnytsia, UA" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/textViewWeatherInterpretationString"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/standard_text_size"
+
+        app:layout_constraintBottom_toTopOf="@id/guideLineHorizontal060"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textViewCity"
+        tools:text="Sunny" />
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/blockWindFlow"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginVertical="@dimen/margin_medium"
+        android:layout_marginStart="@dimen/margin_medium"
+        android:background="@color/telemetry_color"
+
+        app:layout_constraintBottom_toBottomOf="@id/guideLineHorizontal080"
+        app:layout_constraintEnd_toStartOf="@id/blockPreception"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/guideLineHorizontal060"
+        app:shapeAppearanceOverlay="@style/RoundedLeftCorners" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/textViewWindFlowValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/imageViewWindowFlowImage"
+        app:layout_constraintEnd_toEndOf="@id/blockWindFlow"
+        app:layout_constraintStart_toStartOf="@id/blockWindFlow"
+        app:layout_constraintTop_toTopOf="@id/blockWindFlow"
+        tools:text="78" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/imageViewWindowFlowImage"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/textViewWindowFlowStringValue"
+        app:layout_constraintEnd_toEndOf="@id/blockWindFlow"
+        app:layout_constraintStart_toStartOf="@id/blockWindFlow"
+        app:layout_constraintTop_toBottomOf="@id/textViewWindFlowValue"
+        tools:src="@tools:sample/avatars" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/textViewWindowFlowStringValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@id/blockWindFlow"
+        app:layout_constraintEnd_toEndOf="@id/blockWindFlow"
+        app:layout_constraintStart_toStartOf="@id/blockWindFlow"
+        app:layout_constraintTop_toBottomOf="@id/imageViewWindowFlowImage"
+        tools:text="Wind Flow" />
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/blockPreception"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginHorizontal="@dimen/margin_secret"
+        android:layout_marginVertical="@dimen/margin_medium"
+        android:background="@color/telemetry_color"
+
+        app:layout_constraintBottom_toBottomOf="@id/guideLineHorizontal080"
+        app:layout_constraintEnd_toStartOf="@id/blockHumidity"
+        app:layout_constraintStart_toEndOf="@id/blockWindFlow"
+        app:layout_constraintTop_toTopOf="@id/guideLineHorizontal060" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/textViewPreceptionValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/imageViewblockPreceptionImage"
+        app:layout_constraintEnd_toEndOf="@id/blockPreception"
+        app:layout_constraintStart_toStartOf="@id/blockPreception"
+        app:layout_constraintTop_toTopOf="@id/blockPreception"
+        tools:text="52" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/imageViewblockPreceptionImage"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/textViewPreceptionStringValue"
+        app:layout_constraintEnd_toEndOf="@id/blockPreception"
+        app:layout_constraintStart_toStartOf="@id/blockPreception"
+        app:layout_constraintTop_toBottomOf="@id/textViewWindFlowValue"
+        tools:src="@tools:sample/avatars" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/textViewPreceptionStringValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@id/blockPreception"
+        app:layout_constraintEnd_toEndOf="@id/blockPreception"
+        app:layout_constraintStart_toStartOf="@id/blockPreception"
+        app:layout_constraintTop_toBottomOf="@id/imageViewblockPreceptionImage"
+        tools:text="Preception" />
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/blockHumidity"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginVertical="@dimen/margin_medium"
+        android:layout_marginEnd="@dimen/margin_medium"
+        android:background="@color/telemetry_color"
+
+        app:layout_constraintBottom_toBottomOf="@id/guideLineHorizontal080"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/blockPreception"
+        app:layout_constraintTop_toTopOf="@id/guideLineHorizontal060"
+        app:shapeAppearanceOverlay="@style/RoundedRightCorners" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/textViewHumidityValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/imageViewblockPreceptionImage"
+        app:layout_constraintEnd_toEndOf="@id/blockHumidity"
+        app:layout_constraintStart_toStartOf="@id/blockHumidity"
+        app:layout_constraintTop_toTopOf="@id/blockHumidity"
+        tools:text="89" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/imageViewblockHumidityImage"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/textViewHumidityStringValue"
+        app:layout_constraintEnd_toEndOf="@id/blockHumidity"
+        app:layout_constraintStart_toStartOf="@id/blockHumidity"
+        app:layout_constraintTop_toBottomOf="@id/textViewHumidityValue"
+        tools:src="@tools:sample/avatars" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/textViewHumidityStringValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@id/blockHumidity"
+        app:layout_constraintEnd_toEndOf="@id/blockHumidity"
+        app:layout_constraintStart_toStartOf="@id/blockHumidity"
+        app:layout_constraintTop_toBottomOf="@id/imageViewblockPreceptionImage"
+        tools:text="Humidity" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/blockHourlyWeather"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="@dimen/margin_medium"
+        android:background="@drawable/layout_rounder_corners"
+        android:orientation="horizontal"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/guideLineHorizontal080">
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/linearLayout1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/linearLayout2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/textViewWeatherHourlyDescription1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Windy" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/imageViewWeatherHourly1"
+                android:layout_width="wrap_content"
+                android:layout_height="10dp"
+                tools:src="@tools:sample/avatars" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/textViewWeatherHourlyTime1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="12pm" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/linearLayout2"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/linearLayout3"
+            app:layout_constraintStart_toEndOf="@id/linearLayout1"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/textViewWeatherHourlyDescription2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Rainy" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/imageViewWeatherHourly2"
+                android:layout_width="wrap_content"
+                android:layout_height="10dp"
+                tools:src="@tools:sample/avatars" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/textViewWeatherHourlyTime2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="1pm" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/linearLayout3"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/linearLayout4"
+            app:layout_constraintStart_toEndOf="@id/linearLayout2"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/textViewWeatherHourlyDescription3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Rainbow" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/imageViewWeatherHourly3"
+                android:layout_width="wrap_content"
+                android:layout_height="10dp"
+                tools:src="@tools:sample/avatars" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/textViewWeatherHourlyTime3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="2pm" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/linearLayout4"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/linearLayout5"
+            app:layout_constraintStart_toEndOf="@id/linearLayout3"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/textViewWeatherHourlyDescription4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Sunny" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/imageViewWeatherHourly4"
+                android:layout_width="wrap_content"
+                android:layout_height="10dp"
+                tools:src="@tools:sample/avatars" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/textViewWeatherHourlyTime4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="4pm" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/linearLayout5"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/linearLayout4"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/textViewWeatherHourlyDescription5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Moon" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/imageViewWeatherHourly5"
+                android:layout_width="wrap_content"
+                android:layout_height="10dp"
+                tools:src="@tools:sample/avatars" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/textViewWeatherHourlyTime5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="7pm" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
