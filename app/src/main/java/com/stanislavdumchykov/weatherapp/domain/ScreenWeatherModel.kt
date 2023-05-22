@@ -8,4 +8,7 @@ data class ScreenWeatherModel(
     val temperature: Double,
     val city: String,
     @StringRes val weatherInterpretationString: Int,
+    val windFlow: Double,
+    val preception: Int,
+    val humidity: Int,
 )
