@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background_color"
-    tools:context=".MainActivity">
+    tools:context=".presentation.main.MainActivity">
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideLineHorizontal010"
@@ -88,7 +88,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/guideLineHorizontal010"
-        tools:src="@drawable/clear_sky" />
+        tools:src="@drawable/weather_code0" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/textViewDegreesCelsius"
