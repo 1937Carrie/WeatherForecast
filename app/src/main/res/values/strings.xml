@@ -34,4 +34,12 @@
     <string name="wind_flow">Wind flow</string>
     <string name="precipitation">Precipitation</string>
     <string name="humidity">Humidity</string>
+    <string name="temperature_value">%.1f°C</string>
+    <string name="precipitation_value">%d%%</string>
+    <string name="humidity_value">%d%%</string>
+    <string name="temperature_value_short">%.1f°</string>
+
+<!--    CheckInternetActivity-->
+    <string name="text_connection_failed">Failed to connect to the network</string>
+    <string name="button_try_again_text">Try again</string>
 </resources>

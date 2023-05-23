@@ -66,17 +66,6 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/imageViewSearch"
-        android:layout_width="@dimen/icon_search_size"
-        android:layout_height="@dimen/icon_search_size"
-        android:layout_marginEnd="@dimen/margin_medium"
-        android:src="@drawable/ic_search"
-        android:tint="@color/weather_color"
-        app:layout_constraintBottom_toTopOf="@id/guideLineHorizontal010"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/imageViewWeatherInterpretationImage"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -290,12 +279,15 @@
                 android:id="@+id/textViewWeatherHourlyTemperature1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAlignment="center" />
+                android:textAlignment="center"
+                tools:text="13°" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/textViewWeatherHourlyDescription1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:ellipsize="start"
+                android:singleLine="true"
                 android:textAlignment="center"
                 tools:text="Windy" />
 
@@ -303,7 +295,7 @@
                 android:id="@+id/textViewWeatherHourlyTime1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:text="12pm" />
+                tools:text="12:00" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -322,12 +314,14 @@
                 android:id="@+id/textViewWeatherHourlyTemperature2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAlignment="center" />
+                android:textAlignment="center"
+                tools:text="-3°" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/textViewWeatherHourlyDescription2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:maxLines="1"
                 android:textAlignment="center"
                 tools:text="Rainy" />
 
@@ -335,7 +329,7 @@
                 android:id="@+id/textViewWeatherHourlyTime2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:text="1pm" />
+                tools:text="13:00" />
         </androidx.appcompat.widget.LinearLayoutCompat>
 
         <androidx.appcompat.widget.LinearLayoutCompat
@@ -353,12 +347,14 @@
                 android:id="@+id/textViewWeatherHourlyTemperature3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAlignment="center" />
+                android:textAlignment="center"
+                tools:text="0°" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/textViewWeatherHourlyDescription3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:maxLines="1"
                 android:textAlignment="center"
                 tools:text="Rainbow" />
 
@@ -366,7 +362,7 @@
                 android:id="@+id/textViewWeatherHourlyTime3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:text="2pm" />
+                tools:text="14:00" />
         </androidx.appcompat.widget.LinearLayoutCompat>
 
         <androidx.appcompat.widget.LinearLayoutCompat
@@ -384,12 +380,14 @@
                 android:id="@+id/textViewWeatherHourlyTemperature4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAlignment="center" />
+                android:textAlignment="center"
+                tools:text="30°" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/textViewWeatherHourlyDescription4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:maxLines="1"
                 android:textAlignment="center"
                 tools:text="Sunny" />
 
@@ -397,7 +395,7 @@
                 android:id="@+id/textViewWeatherHourlyTime4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:text="4pm" />
+                tools:text="15:00" />
         </androidx.appcompat.widget.LinearLayoutCompat>
 
         <androidx.appcompat.widget.LinearLayoutCompat
@@ -415,12 +413,15 @@
                 android:id="@+id/textViewWeatherHourlyTemperature5"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAlignment="center" />
+                android:textAlignment="center"
+                tools:text="-273°" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/textViewWeatherHourlyDescription5"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:ellipsize="marquee"
+                android:singleLine="true"
                 android:textAlignment="center"
                 tools:text="Moon" />
 
@@ -428,7 +429,7 @@
                 android:id="@+id/textViewWeatherHourlyTime5"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:text="7pm" />
+                tools:text="16:00" />
         </androidx.appcompat.widget.LinearLayoutCompat>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
