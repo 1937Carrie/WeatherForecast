@@ -1,4 +1,4 @@
-package com.stanislavdumchykov.weatherapp.domain.responseopenmeteo
+package com.stanislavdumchykov.weatherapp.domain.responseOpenMeteo
 
 data class Hourly(
     val precipitation_probability: List<Int>,

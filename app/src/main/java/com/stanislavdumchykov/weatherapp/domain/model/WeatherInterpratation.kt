@@ -1,4 +1,4 @@
-package com.stanislavdumchykov.weatherapp.domain
+package com.stanislavdumchykov.weatherapp.domain.model
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes

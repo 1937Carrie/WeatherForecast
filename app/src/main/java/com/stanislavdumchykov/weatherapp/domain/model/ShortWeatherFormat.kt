@@ -1,4 +1,4 @@
-package com.stanislavdumchykov.weatherapp.domain
+package com.stanislavdumchykov.weatherapp.domain.model
 
 data class ShortWeatherFormat(
     val temperature: Double,

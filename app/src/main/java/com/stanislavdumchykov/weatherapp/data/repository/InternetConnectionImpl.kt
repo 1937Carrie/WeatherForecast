@@ -1,46 +1,14 @@
-package com.stanislavdumchykov.weatherapp
+package com.stanislavdumchykov.weatherapp.data.repository
 
 import android.content.Context
-import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
-import android.os.Bundle
 import android.util.Log
-import android.widget.Toast
-import com.stanislavdumchykov.weatherapp.databinding.ActivityCheckInternetBinding
-import com.stanislavdumchykov.weatherapp.presentation.base.BaseActivity
-import com.stanislavdumchykov.weatherapp.presentation.main.MainActivity
+import com.stanislavdumchykov.weatherapp.domain.repository.InternetConnection
 
-class CheckInternetActivity :
-    BaseActivity<ActivityCheckInternetBinding>(ActivityCheckInternetBinding::inflate) {
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        startNextActivity()
-    }
-
-    override fun setListeners() {
-        super.setListeners()
-        binding.buttonTryConnectionAgain.setOnClickListener {
-            if (!startNextActivity()) Toast.makeText(
-                binding.root.context,
-                "Still there is not connection",
-                Toast.LENGTH_SHORT
-            ).show()
-        }
-    }
-
-    private fun startNextActivity(): Boolean {
-        return if (checkInternetConnection(binding.root.context)) {
-            startActivity(Intent(binding.root.context, MainActivity::class.java))
-            finish()
-            true
-        } else false
-    }
-
-    private fun checkInternetConnection(context: Context): Boolean {
+class InternetConnectionImpl : InternetConnection {
+    override fun check(context: Context): Boolean {
         if (context == null) return false
 
         val connectivityManager =

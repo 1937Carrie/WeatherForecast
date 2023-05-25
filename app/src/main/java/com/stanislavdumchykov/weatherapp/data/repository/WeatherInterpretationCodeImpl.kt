@@ -1,7 +1,7 @@
 package com.stanislavdumchykov.weatherapp.data.repository
 
 import com.stanislavdumchykov.weatherapp.R
-import com.stanislavdumchykov.weatherapp.domain.WeatherInterpretation
+import com.stanislavdumchykov.weatherapp.domain.model.WeatherInterpretation
 
 object WeatherInterpretationCodeImpl {
     private val dataMap = mapOf(

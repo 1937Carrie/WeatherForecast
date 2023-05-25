@@ -1,6 +1,6 @@
-package com.stanislavdumchykov.weatherapp.domain.retrofitapi
+package com.stanislavdumchykov.weatherapp.domain.retrofitApi
 
-import com.stanislavdumchykov.weatherapp.domain.responseopenmeteo.ResponseOpenMeteo
+import com.stanislavdumchykov.weatherapp.domain.responseOpenMeteo.ResponseOpenMeteo
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query

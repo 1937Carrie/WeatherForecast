@@ -1,6 +1,6 @@
 package com.stanislavdumchykov.weatherapp.data.repository
 
-import com.stanislavdumchykov.weatherapp.domain.retrofitapi.OpenMeteoService
+import com.stanislavdumchykov.weatherapp.domain.retrofitApi.OpenMeteoService
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit

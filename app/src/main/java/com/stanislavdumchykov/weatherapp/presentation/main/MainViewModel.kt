@@ -4,9 +4,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.stanislavdumchykov.weatherapp.data.database.weatherForecast.WeatherForecast
+import com.stanislavdumchykov.weatherapp.data.database.weatherForecast.WeatherForecastDao
 import com.stanislavdumchykov.weatherapp.data.repository.OpenMeteoServiceImpl
-import com.stanislavdumchykov.weatherapp.domain.ScreenWeatherModel
-import com.stanislavdumchykov.weatherapp.domain.ShortWeatherFormat
+import com.stanislavdumchykov.weatherapp.domain.model.ScreenWeatherModel
+import com.stanislavdumchykov.weatherapp.domain.model.ShortWeatherFormat
+import com.stanislavdumchykov.weatherapp.domain.responseOpenMeteo.ResponseOpenMeteo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
@@ -16,13 +19,14 @@ import java.util.Date
 import java.util.Locale
 
 
-class MainViewModel : ViewModel() {
+class MainViewModel(
+    private val dao: WeatherForecastDao
+) : ViewModel() {
     private var _currentTimeData = MutableLiveData<ScreenWeatherModel>()
     val currentTimeData: LiveData<ScreenWeatherModel> = _currentTimeData
 
     private var _shortData = MutableLiveData<List<ShortWeatherFormat>>()
     val shortData: LiveData<List<ShortWeatherFormat>> = _shortData
-
 
     fun getCurrentWeather(latitude: Float, longitude: Float) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -35,23 +39,23 @@ class MainViewModel : ViewModel() {
                 return@launch
             }
             if (response.isSuccessful) {
-                val dateFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
-                val currentTime = dateFormat.format(Date())
-                val time = currentTime.split(':').map { it.toInt() }
-                val timePoint = getRightTime(time)
-                println("Current time is: $timePoint")
-                println(response.body()?.hourly?.time.toString())
-                println(response.body()?.hourly?.temperature_2m.toString())
+                val currentTime = getCurrentTime()
+                val timePoint = getRightTime(currentTime)
                 val screenWeatherModel = ScreenWeatherModel(
-                    weatherImage = response.body()?.hourly?.weathercode?.get(timePoint) ?: 0,
-                    temperature = response.body()?.hourly?.temperature_2m?.get(timePoint) ?: 0.0,
-                    city = "Vinnytsia",
-                    weatherInterpretationString = response.body()?.hourly?.weathercode?.get(12)
+                    temperature = response.body()?.hourly?.temperature_2m?.get(timePoint)
+                        ?: 0.0,
+                    city = "$latitude, $longitude",
+                    weatherInterpretationString = response.body()?.hourly?.weathercode?.get(
+                        timePoint
+                    )
                         ?: 0,
                     windFlow = response.body()?.hourly?.windspeed_10m?.get(timePoint) ?: 0.0,
-                    preception = response.body()?.hourly?.precipitation_probability?.get(timePoint)
+                    precipitation = response.body()?.hourly?.precipitation_probability?.get(
+                        timePoint
+                    )
                         ?: 0,
-                    humidity = response.body()?.hourly?.relativehumidity_2m?.get(timePoint) ?: 0,
+                    humidity = response.body()?.hourly?.relativehumidity_2m?.get(timePoint)
+                        ?: 0,
                 )
                 val listOfShortData = getShortDataList(
                     response.body()?.hourly?.temperature_2m,
@@ -59,10 +63,60 @@ class MainViewModel : ViewModel() {
                     response.body()?.hourly?.weathercode,
                     currentTime,
                 )
+                dao.insert(getWeatherForecast(response.body(), timePoint))
                 _currentTimeData.postValue(screenWeatherModel)
                 _shortData.postValue(listOfShortData)
             }
         }
+    }
+
+    fun setCurrentWeatherFromDatabase() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val cachedWeatherForecast = dao.getAll()
+
+            val screenWeatherModel = ScreenWeatherModel(
+                temperature = cachedWeatherForecast.temperature,
+                city = cachedWeatherForecast.city,
+                weatherInterpretationString = cachedWeatherForecast.weatherCode,
+                windFlow = cachedWeatherForecast.windFlow,
+                precipitation = cachedWeatherForecast.precipitation,
+                humidity = cachedWeatherForecast.humidity,
+            )
+
+            val listOfShortData = getShortDataList(
+                temperatureList = cachedWeatherForecast.temperatureList
+                    .substring(1, cachedWeatherForecast.temperatureList.length - 1)
+                    .split(Regex("(, )+"))
+                    .map { it.toDouble() },
+                timeList = cachedWeatherForecast.timeList
+                    .substring(1, cachedWeatherForecast.timeList.length - 1)
+                    .filterNot { it.isWhitespace() }
+                    .split(","),
+                weatherCodeList = cachedWeatherForecast.weatherCodeList
+                    .substring(1, cachedWeatherForecast.weatherCodeList.length - 1)
+                    .filterNot { it.isWhitespace() }
+                    .split(",")
+                    .map { it.toInt() },
+                time = getCurrentTime()
+            )
+
+            _currentTimeData.postValue(screenWeatherModel)
+            _shortData.postValue(listOfShortData)
+        }
+    }
+
+    private fun getWeatherForecast(body: ResponseOpenMeteo?, timePoint: Int): WeatherForecast {
+        return WeatherForecast(
+            temperature = body?.hourly?.temperature_2m?.get(timePoint) ?: 0.0,
+            city = "${body?.longitude}, ${body?.latitude}",
+            weatherCode = body?.hourly?.weathercode?.get(timePoint) ?: 0,
+            windFlow = body?.hourly?.windspeed_10m?.get(timePoint) ?: 0.0,
+            precipitation = body?.hourly?.precipitation_probability?.get(timePoint) ?: 0,
+            humidity = body?.hourly?.relativehumidity_2m?.get(timePoint) ?: 0,
+            temperatureList = (body?.hourly?.temperature_2m ?: emptyList()).toString(),
+            timeList = (body?.hourly?.time ?: emptyList()).toString(),
+            weatherCodeList = (body?.hourly?.weathercode ?: emptyList()).toString(),
+        )
     }
 
     private fun getShortDataList(
@@ -86,10 +140,13 @@ class MainViewModel : ViewModel() {
 
     }
 
-    private fun getRightTime(time: List<Int>): Int {
-        val hours = time[0]
-        val minutes = time[1]
+    private fun getCurrentTime(): String =
+        SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
+
+    private fun getRightTime(time: String): Int {
+        val timeList = time.split(':').map { it.toInt() }
+        val hours = timeList[0]
+        val minutes = timeList[1]
         return if (minutes >= 30) hours + 1 else hours
     }
-
 }
