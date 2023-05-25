@@ -1,18 +1,272 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/swiperefresh"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    android:layout_height="match_parent">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/background_color"
+        tools:context=".presentation.main.MainActivity">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideLineHorizontal010"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.1" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideLineHorizontal040"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.4" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideLineHorizontal050"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.5" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideLineHorizontal060"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.6" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideLineHorizontal080"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.8" />
+
+        <View
+            android:id="@+id/linearLayoutTopBar"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/status_bar"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toTopOf="@id/guideLineHorizontal010"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/textViewWeather"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/weather"
+            android:textColor="@color/weather_color"
+            android:textSize="@dimen/weather_textSize"
+            app:layout_constraintBottom_toTopOf="@id/guideLineHorizontal010"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/imageViewWeatherInterpretationImage"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:scaleType="centerCrop"
+
+            app:layout_constraintBottom_toTopOf="@id/guideLineHorizontal040"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/guideLineHorizontal010"
+            tools:src="@drawable/weather_code0" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/textViewDegreesCelsius"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/big_text_size"
+
+            app:layout_constraintBottom_toTopOf="@id/guideLineHorizontal050"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/guideLineHorizontal040"
+            tools:text="32° c" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/textViewCity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/standard_text_size"
+
+            app:layout_constraintBottom_toTopOf="@id/textViewWeatherInterpretationString"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/guideLineHorizontal050"
+            tools:text="Vinnytsia, UA" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/textViewWeatherInterpretationString"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/standard_text_size"
+
+            app:layout_constraintBottom_toTopOf="@id/guideLineHorizontal060"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textViewCity"
+            tools:text="Sunny" />
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/blockWindFlow"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginVertical="@dimen/margin_medium"
+            android:layout_marginStart="@dimen/margin_medium"
+            android:background="@color/telemetry_color"
+
+            app:layout_constraintBottom_toBottomOf="@id/guideLineHorizontal080"
+            app:layout_constraintEnd_toStartOf="@id/blockPreception"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/guideLineHorizontal060"
+            app:shapeAppearanceOverlay="@style/RoundedLeftCorners" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/textViewWindFlowValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="@dimen/margin_small"
+            app:layout_constraintBottom_toTopOf="@id/imageViewWindowFlowImage"
+            app:layout_constraintEnd_toEndOf="@id/blockWindFlow"
+            app:layout_constraintStart_toStartOf="@id/blockWindFlow"
+            app:layout_constraintTop_toTopOf="@id/blockWindFlow"
+            tools:text="78" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/imageViewWindowFlowImage"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:src="@drawable/windflow"
+            app:layout_constraintBottom_toTopOf="@id/textViewWindowFlowStringValue"
+            app:layout_constraintEnd_toEndOf="@id/blockWindFlow"
+            app:layout_constraintStart_toStartOf="@id/blockWindFlow"
+            app:layout_constraintTop_toBottomOf="@id/textViewWindFlowValue" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/textViewWindowFlowStringValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="@dimen/margin_small"
+            android:text="@string/wind_flow"
+            app:layout_constraintBottom_toBottomOf="@id/blockWindFlow"
+            app:layout_constraintEnd_toEndOf="@id/blockWindFlow"
+            app:layout_constraintStart_toStartOf="@id/blockWindFlow"
+            app:layout_constraintTop_toBottomOf="@id/imageViewWindowFlowImage" />
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/blockPreception"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginHorizontal="@dimen/margin_secret"
+            android:layout_marginVertical="@dimen/margin_medium"
+            android:background="@color/telemetry_color"
+
+            app:layout_constraintBottom_toBottomOf="@id/guideLineHorizontal080"
+            app:layout_constraintEnd_toStartOf="@id/blockHumidity"
+            app:layout_constraintStart_toEndOf="@id/blockWindFlow"
+            app:layout_constraintTop_toTopOf="@id/guideLineHorizontal060" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/textViewPreceptionValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="@dimen/margin_small"
+            app:layout_constraintBottom_toTopOf="@id/imageViewblockPreceptionImage"
+            app:layout_constraintEnd_toEndOf="@id/blockPreception"
+            app:layout_constraintStart_toStartOf="@id/blockPreception"
+            app:layout_constraintTop_toTopOf="@id/blockPreception"
+            tools:text="52" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/imageViewblockPreceptionImage"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:src="@drawable/precipitation"
+            app:layout_constraintBottom_toTopOf="@id/textViewPrecipitationStringValue"
+            app:layout_constraintEnd_toEndOf="@id/blockPreception"
+            app:layout_constraintStart_toStartOf="@id/blockPreception"
+            app:layout_constraintTop_toBottomOf="@id/textViewPreceptionValue" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/textViewPrecipitationStringValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="@dimen/margin_small"
+            android:text="@string/precipitation"
+            app:layout_constraintBottom_toBottomOf="@id/blockPreception"
+            app:layout_constraintEnd_toEndOf="@id/blockPreception"
+            app:layout_constraintStart_toStartOf="@id/blockPreception"
+            app:layout_constraintTop_toBottomOf="@id/imageViewblockPreceptionImage" />
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/blockHumidity"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginVertical="@dimen/margin_medium"
+            android:layout_marginEnd="@dimen/margin_medium"
+            android:background="@color/telemetry_color"
+
+            app:layout_constraintBottom_toBottomOf="@id/guideLineHorizontal080"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/blockPreception"
+            app:layout_constraintTop_toTopOf="@id/guideLineHorizontal060"
+            app:shapeAppearanceOverlay="@style/RoundedRightCorners" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/textViewHumidityValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="@dimen/margin_small"
+            app:layout_constraintBottom_toTopOf="@id/imageViewblockHumidityImage"
+            app:layout_constraintEnd_toEndOf="@id/blockHumidity"
+            app:layout_constraintStart_toStartOf="@id/blockHumidity"
+            app:layout_constraintTop_toTopOf="@id/blockHumidity"
+            tools:text="89" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/imageViewblockHumidityImage"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:src="@drawable/humidity"
+            app:layout_constraintBottom_toTopOf="@id/textViewHumidityStringValue"
+            app:layout_constraintEnd_toEndOf="@id/blockHumidity"
+            app:layout_constraintStart_toStartOf="@id/blockHumidity"
+            app:layout_constraintTop_toBottomOf="@id/textViewHumidityValue" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/textViewHumidityStringValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="@dimen/margin_small"
+            android:text="@string/humidity"
+            app:layout_constraintBottom_toBottomOf="@id/blockHumidity"
+            app:layout_constraintEnd_toEndOf="@id/blockHumidity"
+            app:layout_constraintStart_toStartOf="@id/blockHumidity"
+            app:layout_constraintTop_toBottomOf="@id/imageViewblockHumidityImage" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_margin="@dimen/margin_medium"
+
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/guideLineHorizontal080"
+
+            tools:listitem="@layout/recycler_view_item" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

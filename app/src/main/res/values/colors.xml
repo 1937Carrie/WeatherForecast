@@ -2,4 +2,9 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="status_bar">#FFFFFF</color>
+    <color name="background_color">#F4F9FF</color>
+    <color name="telemetry_color">#FFFFFF</color>
+    <color name="weather_color">#9D9EA0</color>
+    <color name="button_text_color">#000000</color>
 </resources>

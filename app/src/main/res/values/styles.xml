@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="RoundedLeftCorners" parent="">
+        <item name="cornerSizeTopLeft">8dp</item>
+        <item name="cornerFamilyTopLeft">rounded</item>
+        <item name="cornerSizeBottomLeft">8dp</item>
+        <item name="cornerFamilyBottomLeft">rounded</item>
+    </style>
+    <style name="RoundedRightCorners" parent="">
+        <item name="cornerSizeTopRight">8dp</item>
+        <item name="cornerFamilyTopRight">rounded</item>
+        <item name="cornerSizeBottomRight">8dp</item>
+        <item name="cornerFamilyBottomRight">rounded</item>
+    </style>
+    <style name="RoundedAllCorners" parent="">
+        <item name="cornerSize">8dp</item>
+        <item name="cornerFamily">rounded</item>
+    </style>
+</resources>

@@ -1,3 +1,48 @@
 <resources>
     <string name="app_name">Weather App</string>
+
+    <string name="weather">Weather</string>
+    <string name="weather_unknown">Unknown weather</string>
+    <string name="weather_clear_sky">Clear sky</string>
+    <string name="weather_mainly_clear">Mainly clear</string>
+    <string name="weather_party_cloudy">Partly cloudy</string>
+    <string name="weather_overcast">Overcast</string>
+    <string name="weather_fog">Fog</string>
+    <string name="weather_depositing_rime_fog">Depositing rime fog</string>
+    <string name="weather_drizzle_light">Light drizzle</string>
+    <string name="weather_drizzle_moderate">Moderate drizzle</string>
+    <string name="weather_drizzle_dense">Dense drizzle</string>
+    <string name="weather_freezing_drizzle_light">Light freezing drizzle</string>
+    <string name="weather_freezing_drizzle_dense">Dense freezing drizzle</string>
+    <string name="weather_rain_slight">Slight rain</string>
+    <string name="weather_rain_moderate">Moderate rain</string>
+    <string name="weather_rain_heavy">Heavy rain</string>
+    <string name="weather_freezing_rain_light">Light freezing rain</string>
+    <string name="weather_freezing_rain_heavy">Heavy freezing rain</string>
+    <string name="weather_snow_fall_slight">Slight snow fall</string>
+    <string name="weather_snow_fall_moderate">Moderate snow fall</string>
+    <string name="weather_snow_fall_intensity">Intensity snow fall</string>
+    <string name="weather_snow_grains">Snow grains</string>
+    <string name="weather_rain_showers_slight">Slight rain showers</string>
+    <string name="weather_rain_showers_moderate">Moderate rain showers</string>
+    <string name="weather_rain_showers_violent">Violent rain showers</string>
+    <string name="weather_snow_showers_slight">Slight snow showers</string>
+    <string name="weather_snow_showers_heavy">Heavy snow showers</string>
+    <string name="weather_thunderstorm">Thunderstorm: Slight or moderate</string>
+    <string name="weather_thunderstorm_with_slight_hail">Thunderstorm with slight hail</string>
+    <string name="weather_thunderstorm_with_heavy_hail">Thunderstorm with heavy hail</string>
+    <string name="wind_flow">Wind flow</string>
+    <string name="precipitation">Precipitation</string>
+    <string name="humidity">Humidity</string>
+    <string name="temperature_value">%.1f°C</string>
+    <string name="precipitation_value">%d%%</string>
+    <string name="humidity_value">%d%%</string>
+    <string name="temperature_value_short">%.1f°</string>
+    <string name="text_there_is_no_internet_connection">There is no internet connection. You will see caching data</string>
+
+    <!--    CheckInternetActivity-->
+    <string name="text_connection_failed">Failed to connect to the network</string>
+    <string name="button_try_again_text">Try again</string>
+    <string name="text_failed_to_determine_coordinates">Failed to determine coordinates</string>
+    <string name="text_no_connection">Still there is not connection</string>
 </resources>
