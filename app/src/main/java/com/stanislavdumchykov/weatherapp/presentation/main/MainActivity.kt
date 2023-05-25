@@ -10,6 +10,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.stanislavdumchykov.weatherapp.R
@@ -18,6 +19,7 @@ import com.stanislavdumchykov.weatherapp.data.repository.InternetConnectionImpl
 import com.stanislavdumchykov.weatherapp.data.repository.WeatherInterpretationCodeImpl
 import com.stanislavdumchykov.weatherapp.databinding.ActivityMainBinding
 import com.stanislavdumchykov.weatherapp.presentation.base.BaseActivity
+import com.stanislavdumchykov.weatherapp.presentation.main.adapter.RecyclerAdapter
 
 private const val LOCATION_PERMISSION_REQUEST_CODE = 1
 
@@ -34,6 +36,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
             }
         }
     )
+    private val recyclerAdapter: RecyclerAdapter by lazy { RecyclerAdapter(binding.recyclerView.width) }
     private lateinit var fusedLocationClient: FusedLocationProviderClient
 
 
@@ -41,6 +44,17 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
         super.onCreate(savedInstanceState)
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+
+        binding.recyclerView.apply {
+            adapter = recyclerAdapter
+            layoutManager = LinearLayoutManager(
+                this@MainActivity,
+                LinearLayoutManager.HORIZONTAL,
+                false
+            )
+        }
+
+
 
         getWeatherForecast()
 
@@ -54,7 +68,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        when (requestCode){
+        when (requestCode) {
             LOCATION_PERMISSION_REQUEST_CODE -> {
                 if (ActivityCompat.checkSelfPermission(
                         this, Manifest.permission.ACCESS_FINE_LOCATION
@@ -95,28 +109,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
             }
         }
         mainViewModel.shortData.observe(this) {
-            with(binding) {
-                textViewWeatherHourlyTemperature1.text =
-                    getString(R.string.temperature_value_short, it[0].temperature)
-                textViewWeatherHourlyDescription1.text = getStringFromViewModel(it[0].weatherCode)
-                textViewWeatherHourlyTime1.text = it[0].time.substring(it[0].time.length - 5)
-                textViewWeatherHourlyTemperature2.text =
-                    getString(R.string.temperature_value_short, it[1].temperature)
-                textViewWeatherHourlyDescription2.text = getStringFromViewModel(it[1].weatherCode)
-                textViewWeatherHourlyTime2.text = it[1].time.substring(it[1].time.length - 5)
-                textViewWeatherHourlyTemperature3.text =
-                    getString(R.string.temperature_value_short, it[2].temperature)
-                textViewWeatherHourlyDescription3.text = getStringFromViewModel(it[2].weatherCode)
-                textViewWeatherHourlyTime3.text = it[2].time.substring(it[2].time.length - 5)
-                textViewWeatherHourlyTemperature4.text =
-                    getString(R.string.temperature_value_short, it[3].temperature)
-                textViewWeatherHourlyDescription4.text = getStringFromViewModel(it[3].weatherCode)
-                textViewWeatherHourlyTime4.text = it[3].time.substring(it[3].time.length - 5)
-                textViewWeatherHourlyTemperature5.text =
-                    getString(R.string.temperature_value_short, it[4].temperature)
-                textViewWeatherHourlyDescription5.text = getStringFromViewModel(it[4].weatherCode)
-                textViewWeatherHourlyTime5.text = it[4].time.substring(it[4].time.length - 5)
-            }
+            recyclerAdapter.submitList(it.toMutableList())
         }
     }
 
