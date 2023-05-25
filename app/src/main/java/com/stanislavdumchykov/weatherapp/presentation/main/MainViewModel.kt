@@ -19,9 +19,9 @@ import com.stanislavdumchykov.weatherapp.data.database.weatherForecast.WeatherFo
 import com.stanislavdumchykov.weatherapp.data.di.WeatherApi
 import com.stanislavdumchykov.weatherapp.domain.model.ScreenWeatherModel
 import com.stanislavdumchykov.weatherapp.domain.model.ShortWeatherFormat
-import com.stanislavdumchykov.weatherapp.domain.repository.InternetConnection
 import com.stanislavdumchykov.weatherapp.domain.repository.WeatherInterpretation
 import com.stanislavdumchykov.weatherapp.domain.responseOpenMeteo.ResponseOpenMeteo
+import com.stanislavdumchykov.weatherapp.presentation.utils.Constants.LOCATION_PERMISSION_REQUEST_CODE
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -32,14 +32,11 @@ import java.util.Date
 import java.util.Locale
 import javax.inject.Inject
 
-private const val LOCATION_PERMISSION_REQUEST_CODE = 1
-
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val dao: WeatherForecastDao,
     private val weatherApi: WeatherApi,
     private val weatherInterpretationData: WeatherInterpretation,
-    private val internetConnection: InternetConnection,
 
     ) : ViewModel() {
     private var _currentTimeData = MutableLiveData<ScreenWeatherModel>()
@@ -136,7 +133,7 @@ class MainViewModel @Inject constructor(
     }
 
     private fun isInternetConnect(context: Context): Boolean {
-        return internetConnection.check(context)
+        return true
     }
 
     fun getCurrentLocation(context: Context) {

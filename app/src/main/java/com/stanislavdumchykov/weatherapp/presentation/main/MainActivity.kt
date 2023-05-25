@@ -13,9 +13,9 @@ import com.stanislavdumchykov.weatherapp.R
 import com.stanislavdumchykov.weatherapp.databinding.ActivityMainBinding
 import com.stanislavdumchykov.weatherapp.presentation.base.BaseActivity
 import com.stanislavdumchykov.weatherapp.presentation.main.adapter.RecyclerAdapter
+import com.stanislavdumchykov.weatherapp.presentation.utils.Constants.LOCATION_PERMISSION_REQUEST_CODE
 import dagger.hilt.android.AndroidEntryPoint
 
-private const val LOCATION_PERMISSION_REQUEST_CODE = 1
 
 @AndroidEntryPoint
 class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::inflate) {
@@ -40,15 +40,18 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        when (requestCode) {
-            LOCATION_PERMISSION_REQUEST_CODE -> {
-                if (ActivityCompat.checkSelfPermission(
-                        this, Manifest.permission.ACCESS_FINE_LOCATION
-                    ) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                        this, Manifest.permission.ACCESS_COARSE_LOCATION
-                    ) == PackageManager.PERMISSION_GRANTED
-                ) mainViewModel.getCurrentLocation(this)
-            }
+        if (
+            requestCode == LOCATION_PERMISSION_REQUEST_CODE &&
+            ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED &&
+            ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            mainViewModel.getCurrentLocation(this)
         }
     }
 
