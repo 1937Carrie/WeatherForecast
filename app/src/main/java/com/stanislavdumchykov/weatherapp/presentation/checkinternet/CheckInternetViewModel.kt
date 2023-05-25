@@ -17,6 +17,9 @@ class CheckInternetViewModel @Inject constructor(
     private val internetConnection: InternetConnection,
 ) : ViewModel() {
 
+    /**
+     * @return True if table in database exists.
+     */
     fun isDatabaseExists(): Boolean {
         val result = viewModelScope.async(Dispatchers.IO) {
             return@async dao.isExists()
@@ -25,6 +28,9 @@ class CheckInternetViewModel @Inject constructor(
         return runBlocking { result.await() }
     }
 
+    /**
+     * @return True if there is internet connection.
+     */
     fun isInternetConnect(context: Context): Boolean {
         return internetConnection.check(context)
     }

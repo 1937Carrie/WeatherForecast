@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="margin_small">8dp</dimen>
+    <dimen name="stroke_width">2dp</dimen>
 
     <dimen name="weather_textSize">24sp</dimen>
     <dimen name="icon_search_size">30dp</dimen>
