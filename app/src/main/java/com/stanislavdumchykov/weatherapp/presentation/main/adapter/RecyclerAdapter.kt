@@ -5,16 +5,17 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.stanislavdumchykov.weatherapp.data.repository.WeatherInterpretationCodeImpl
 import com.stanislavdumchykov.weatherapp.databinding.RecyclerViewItemBinding
 import com.stanislavdumchykov.weatherapp.domain.model.ShortWeatherFormat
 import com.stanislavdumchykov.weatherapp.presentation.main.adapter.diffCallBack.ItemDiffCallBack
 import kotlin.math.roundToInt
 
-class RecyclerAdapter(private val recyclerWidth: Int) :
-    ListAdapter<ShortWeatherFormat, RecyclerAdapter.WeatherViewHolder>(
-        ItemDiffCallBack()
-    ) {
+class RecyclerAdapter(
+    private val recyclerWidth: Int,
+    private val weatherInterpretation: (Int) -> Int
+) : ListAdapter<ShortWeatherFormat, RecyclerAdapter.WeatherViewHolder>(
+    ItemDiffCallBack()
+) {
 
     inner class WeatherViewHolder(
         private val binding: RecyclerViewItemBinding,
@@ -24,7 +25,7 @@ class RecyclerAdapter(private val recyclerWidth: Int) :
             with(binding) {
                 textViewWeatherHourlyTemperature.text = item.temperature.toString()
                 textViewWeatherHourlyDescription.text = binding.root.context.getString(
-                    WeatherInterpretationCodeImpl.getDescriptionByCode(item.weatherCode)
+                    weatherInterpretation(item.weatherCode)
                 )
                 textViewWeatherHourlyTime.text =
                     item.time.substring(item.time.length - 5, item.time.length)

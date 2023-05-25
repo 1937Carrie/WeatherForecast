@@ -8,35 +8,25 @@ import androidx.activity.viewModels
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.stanislavdumchykov.weatherapp.R
-import com.stanislavdumchykov.weatherapp.data.database.AppDatabase
-import com.stanislavdumchykov.weatherapp.data.repository.InternetConnectionImpl
-import com.stanislavdumchykov.weatherapp.data.repository.WeatherInterpretationCodeImpl
 import com.stanislavdumchykov.weatherapp.databinding.ActivityMainBinding
 import com.stanislavdumchykov.weatherapp.presentation.base.BaseActivity
 import com.stanislavdumchykov.weatherapp.presentation.main.adapter.RecyclerAdapter
+import dagger.hilt.android.AndroidEntryPoint
 
 private const val LOCATION_PERMISSION_REQUEST_CODE = 1
 
+@AndroidEntryPoint
 class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::inflate) {
-    private val database by lazy {
-        AppDatabase.getDatabase(this)
-    }
-    private val mainViewModel: MainViewModel by viewModels(
-        factoryProducer = {
-            object : ViewModelProvider.Factory {
-                override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    return MainViewModel(database.weatherForecastDao()) as T
-                }
-            }
+    private val mainViewModel: MainViewModel by viewModels()
+    private val recyclerAdapter: RecyclerAdapter by lazy {
+        RecyclerAdapter(binding.recyclerView.width) { i: Int ->
+            mainViewModel.getDescriptionByCode(i)
         }
-    )
-    private val recyclerAdapter: RecyclerAdapter by lazy { RecyclerAdapter(binding.recyclerView.width) }
+    }
     private lateinit var fusedLocationClient: FusedLocationProviderClient
 
 
@@ -114,7 +104,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
     }
 
     private fun isConnectToInternet(): Boolean {
-        return if (!InternetConnectionImpl().check(this)) {
+        return if (!mainViewModel.isInternetConnect(this)) {
             mainViewModel.setCurrentWeatherFromDatabase()
             false
         } else true
@@ -123,12 +113,12 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
     private fun getDrawableFromViewModel(weatherInterpretationCode: Int): Drawable =
         AppCompatResources.getDrawable(
             applicationContext,
-            WeatherInterpretationCodeImpl.getImageByCode(weatherInterpretationCode)
+            mainViewModel.getImageByCode(weatherInterpretationCode)
         ) ?: AppCompatResources.getDrawable(applicationContext, R.drawable.weather_code_unkown)!!
 
 
     private fun getStringFromViewModel(weatherInterpretationCode: Int): String =
-        getString(WeatherInterpretationCodeImpl.getDescriptionByCode(weatherInterpretationCode))
+        getString(mainViewModel.getDescriptionByCode(weatherInterpretationCode))
 
     private fun checkLocationPermissions(): Boolean {
         val fineLocationPermission = ContextCompat.checkSelfPermission(

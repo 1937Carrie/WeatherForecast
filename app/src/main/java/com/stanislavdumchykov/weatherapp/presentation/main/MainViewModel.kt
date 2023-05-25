@@ -1,15 +1,19 @@
 package com.stanislavdumchykov.weatherapp.presentation.main
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.stanislavdumchykov.weatherapp.data.database.weatherForecast.WeatherForecast
 import com.stanislavdumchykov.weatherapp.data.database.weatherForecast.WeatherForecastDao
-import com.stanislavdumchykov.weatherapp.data.repository.OpenMeteoServiceImpl
+import com.stanislavdumchykov.weatherapp.data.di.WeatherApi
 import com.stanislavdumchykov.weatherapp.domain.model.ScreenWeatherModel
 import com.stanislavdumchykov.weatherapp.domain.model.ShortWeatherFormat
+import com.stanislavdumchykov.weatherapp.domain.repository.InternetConnection
+import com.stanislavdumchykov.weatherapp.domain.repository.WeatherInterpretation
 import com.stanislavdumchykov.weatherapp.domain.responseOpenMeteo.ResponseOpenMeteo
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
@@ -17,11 +21,16 @@ import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import javax.inject.Inject
 
+@HiltViewModel
+class MainViewModel @Inject constructor(
+    private val dao: WeatherForecastDao,
+    private val weatherApi: WeatherApi,
+    private val weatherInterpretationData: WeatherInterpretation,
+    private val internetConnection: InternetConnection,
 
-class MainViewModel(
-    private val dao: WeatherForecastDao
-) : ViewModel() {
+    ) : ViewModel() {
     private var _currentTimeData = MutableLiveData<ScreenWeatherModel>()
     val currentTimeData: LiveData<ScreenWeatherModel> = _currentTimeData
 
@@ -30,9 +39,8 @@ class MainViewModel(
 
     fun getCurrentWeather(latitude: Float, longitude: Float) {
         viewModelScope.launch(Dispatchers.IO) {
-            val openMeteoServiceImpl = OpenMeteoServiceImpl
             val response = try {
-                openMeteoServiceImpl.service.getForecast(latitude, longitude)
+                weatherApi.getForecast(latitude, longitude)
             } catch (e: IOException) {
                 return@launch
             } catch (e: HttpException) {
@@ -103,6 +111,18 @@ class MainViewModel(
             _currentTimeData.postValue(screenWeatherModel)
             _shortData.postValue(listOfShortData)
         }
+    }
+
+    fun getImageByCode(weatherCode: Int): Int {
+        return weatherInterpretationData.getImageByCode(weatherCode)
+    }
+
+    fun getDescriptionByCode(weatherCode: Int): Int {
+        return weatherInterpretationData.getDescriptionByCode(weatherCode)
+    }
+
+    fun isInternetConnect(context: Context): Boolean {
+        return internetConnection.check(context)
     }
 
     private fun getWeatherForecast(body: ResponseOpenMeteo?, timePoint: Int): WeatherForecast {
