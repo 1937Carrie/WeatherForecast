@@ -1,29 +1,22 @@
 package com.stanislavdumchykov.weatherapp.presentation.main
 
-import android.Manifest
-import android.app.Activity
-import android.content.Context
-import android.content.pm.PackageManager
-import android.widget.Toast
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
-import com.stanislavdumchykov.weatherapp.R
 import com.stanislavdumchykov.weatherapp.data.database.weatherForecast.WeatherForecast
 import com.stanislavdumchykov.weatherapp.data.database.weatherForecast.WeatherForecastDao
 import com.stanislavdumchykov.weatherapp.data.di.WeatherApi
 import com.stanislavdumchykov.weatherapp.domain.model.ScreenWeatherModel
 import com.stanislavdumchykov.weatherapp.domain.model.ShortWeatherFormat
-import com.stanislavdumchykov.weatherapp.domain.repository.InternetConnection
+import com.stanislavdumchykov.weatherapp.domain.network.NetworkStatusTracker
 import com.stanislavdumchykov.weatherapp.domain.repository.WeatherInterpretation
 import com.stanislavdumchykov.weatherapp.domain.responseOpenMeteo.ResponseOpenMeteo
+import com.stanislavdumchykov.weatherapp.domain.utils.NetworkStatus
+import com.stanislavdumchykov.weatherapp.domain.utils.Status
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
@@ -32,14 +25,12 @@ import java.util.Date
 import java.util.Locale
 import javax.inject.Inject
 
-private const val LOCATION_PERMISSION_REQUEST_CODE = 1
-
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val dao: WeatherForecastDao,
     private val weatherApi: WeatherApi,
     private val weatherInterpretationData: WeatherInterpretation,
-    private val internetConnection: InternetConnection,
+    private val networkStatusTracker: NetworkStatusTracker,
 
     ) : ViewModel() {
     private var _currentTimeData = MutableLiveData<ScreenWeatherModel>()
@@ -48,15 +39,23 @@ class MainViewModel @Inject constructor(
     private var _shortData = MutableLiveData<List<ShortWeatherFormat>>()
     val shortData: LiveData<List<ShortWeatherFormat>> = _shortData
 
-    /**
-     * The field that defines the coordinates.
-     */
-    private lateinit var fusedLocationClient: FusedLocationProviderClient
+    val status = MutableStateFlow(Status.LOADING)
+
+    init {
+        viewModelScope.launch {
+            networkStatusTracker.networkStatus.collect { networkState ->
+                when (networkState) {
+                    NetworkStatus.Available -> status.value = Status.SUCCESS
+                    else -> status.value = Status.FAILURE
+                }
+            }
+        }
+    }
 
     /**
      * Get weather forecast from internet.
      */
-    private fun getCurrentWeather(latitude: Float, longitude: Float) {
+    fun getCurrentWeather(latitude: Double, longitude: Double) {
         viewModelScope.launch(Dispatchers.IO) {
             val response = try {
                 weatherApi.getForecast(latitude, longitude)
@@ -96,7 +95,7 @@ class MainViewModel @Inject constructor(
     /**
      * Get cached forecast.
      */
-    private fun setCurrentWeatherFromDatabase() {
+    fun setCurrentWeatherFromDatabase() {
         viewModelScope.launch(Dispatchers.IO) {
             val cachedWeatherForecast = dao.getAll()
 
@@ -110,9 +109,10 @@ class MainViewModel @Inject constructor(
             )
 
             val listOfShortData =
-                getShortDataList(temperatureList = cachedWeatherForecast.temperatureList.substring(
-                    1, cachedWeatherForecast.temperatureList.length - 1
-                ).split(Regex("(, )+")).map { it.toDouble() },
+                getShortDataList(
+                    temperatureList = cachedWeatherForecast.temperatureList.substring(
+                        1, cachedWeatherForecast.temperatureList.length - 1
+                    ).split(Regex("(, )+")).map { it.toDouble() },
                     timeList = cachedWeatherForecast.timeList.substring(
                         1, cachedWeatherForecast.timeList.length - 1
                     ).filterNot { it.isWhitespace() }.split(","),
@@ -133,77 +133,6 @@ class MainViewModel @Inject constructor(
 
     fun getDescriptionByCode(weatherCode: Int): Int {
         return weatherInterpretationData.getDescriptionByCode(weatherCode)
-    }
-
-    private fun isInternetConnect(context: Context): Boolean {
-        return internetConnection.check(context)
-    }
-
-    fun getCurrentLocation(context: Context) {
-        if (checkLocationPermissions(context) && isConnectToInternet(context)) {
-            if (ActivityCompat.checkSelfPermission(
-                    context, Manifest.permission.ACCESS_FINE_LOCATION
-                ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                    context, Manifest.permission.ACCESS_COARSE_LOCATION
-                ) != PackageManager.PERMISSION_GRANTED
-            ) {
-                requestLocationPermissions(context as Activity)
-                return
-            }
-            if (!this::fusedLocationClient.isInitialized) fusedLocationClient =
-                LocationServices.getFusedLocationProviderClient(context)
-            fusedLocationClient.lastLocation.addOnSuccessListener { location ->
-                // Use the location object
-                if (location != null) {
-                    val latitude = location.latitude.toFloat()
-                    val longitude = location.longitude.toFloat()
-
-                    getCurrentWeather(latitude, longitude)
-
-                } else {
-                    Toast.makeText(
-                        context,
-                        context.getString(R.string.text_failed_to_determine_coordinates),
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-            }.addOnFailureListener { exception ->
-                // Handle any errors that occurred during location retrieval
-            }
-        }
-    }
-
-    /**
-     * Check connection to internet.
-     */
-    fun isConnectToInternet(context: Context): Boolean {
-        return if (!isInternetConnect(context)) {
-            setCurrentWeatherFromDatabase()
-            Toast.makeText(
-                context,
-                context.getString(R.string.text_there_is_no_internet_connection),
-                Toast.LENGTH_SHORT
-            ).show()
-            false
-        } else true
-    }
-
-    fun requestLocationPermissions(context: Activity) {
-        ActivityCompat.requestPermissions(
-            context, arrayOf(
-                Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION
-            ), LOCATION_PERMISSION_REQUEST_CODE
-        )
-    }
-
-    private fun checkLocationPermissions(context: Context): Boolean {
-        val fineLocationPermission = ContextCompat.checkSelfPermission(
-            context, Manifest.permission.ACCESS_FINE_LOCATION
-        )
-        val coarseLocationPermission = ContextCompat.checkSelfPermission(
-            context, Manifest.permission.ACCESS_COARSE_LOCATION
-        )
-        return fineLocationPermission == PackageManager.PERMISSION_GRANTED && coarseLocationPermission == PackageManager.PERMISSION_GRANTED
     }
 
     private fun getWeatherForecast(body: ResponseOpenMeteo?, timePoint: Int): WeatherForecast {
