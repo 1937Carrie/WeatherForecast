@@ -38,11 +38,11 @@
     <string name="precipitation_value">%d%%</string>
     <string name="humidity_value">%d%%</string>
     <string name="temperature_value_short">%.1f°</string>
-    <string name="text_there_is_no_internet_connection">There is no internet connection. You will see caching data</string>
+    <string name="text_there_is_no_internet_connection">There is no internet connection. You will see cached data</string>
 
     <!--    CheckInternetActivity-->
     <string name="text_connection_failed">Failed to connect to the network</string>
     <string name="button_try_again_text">Try again</string>
     <string name="text_failed_to_determine_coordinates">Failed to determine coordinates</string>
-    <string name="text_no_connection">Still there is not connection</string>
+    <string name="text_no_connection">There is no internet connection</string>
 </resources>

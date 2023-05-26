@@ -6,6 +6,6 @@ import retrofit2.Response
 import javax.inject.Inject
 
 class WeatherApi @Inject constructor(private val openMeteoService: OpenMeteoService) {
-    suspend fun getForecast(latitude: Float,longitude: Float): Response<ResponseOpenMeteo> =
+    suspend fun getForecast(latitude: Double, longitude: Double): Response<ResponseOpenMeteo> =
         openMeteoService.getForecast(latitude, longitude)
 }

@@ -26,7 +26,6 @@ class CheckInternetActivity :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-
         setCollectors()
     }
 
@@ -55,13 +54,6 @@ class CheckInternetActivity :
                     }
                 }
             }
-        }
-    }
-
-    override fun setListeners() {
-        binding.buttonTryConnectionAgain.setOnClickListener {
-            Log.d(TAG, "buttonTryConnectionAgain")
-            startNextActivity()
         }
     }
 

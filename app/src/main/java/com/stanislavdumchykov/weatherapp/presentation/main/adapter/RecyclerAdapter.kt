@@ -1,6 +1,5 @@
 package com.stanislavdumchykov.weatherapp.presentation.main.adapter
 
-import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
@@ -8,10 +7,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.stanislavdumchykov.weatherapp.databinding.RecyclerViewItemBinding
 import com.stanislavdumchykov.weatherapp.domain.model.ShortWeatherFormat
 import com.stanislavdumchykov.weatherapp.presentation.main.adapter.diffCallBack.ItemDiffCallBack
-import kotlin.math.roundToInt
 
 class RecyclerAdapter(
-    private val recyclerWidth: Int,
     private val weatherInterpretation: (Int) -> Int
 ) : ListAdapter<ShortWeatherFormat, RecyclerAdapter.WeatherViewHolder>(
     ItemDiffCallBack()
@@ -23,36 +20,34 @@ class RecyclerAdapter(
 
         fun bindTo(item: ShortWeatherFormat) {
             with(binding) {
-                textViewWeatherHourlyTemperature.text = item.temperature.toString()
+                textViewWeatherHourlyTemperature.text = "${item.temperature}°"
                 textViewWeatherHourlyDescription.text = binding.root.context.getString(
                     weatherInterpretation(item.weatherCode)
                 )
                 textViewWeatherHourlyTime.text =
-                    item.time.substring(item.time.length - 5, item.time.length)
+                    item.time.substring(item.time.length - currentList.size, item.time.length)
             }
         }
 
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WeatherViewHolder {
-        return WeatherViewHolder(
+
+        val weatherViewHolder = WeatherViewHolder(
             RecyclerViewItemBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
             )
-        )
+        ).apply {
+            itemView.layoutParams.width = parent.width / currentList.size
+        }
+
+        return weatherViewHolder
     }
 
     override fun onBindViewHolder(holder: WeatherViewHolder, position: Int) {
-        val layoutParams = holder.itemView.layoutParams
-        layoutParams.width = (recyclerWidth.dp - 32.dp) / 5
-        holder.itemView.layoutParams = layoutParams
-
         holder.bindTo(getItem(position))
     }
 
 }
-
-private val Int.dp: Int
-    get() = (this * Resources.getSystem().displayMetrics.density).roundToInt()

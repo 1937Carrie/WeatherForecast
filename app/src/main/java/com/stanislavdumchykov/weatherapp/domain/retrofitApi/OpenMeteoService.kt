@@ -9,7 +9,7 @@ interface OpenMeteoService {
     //    @FormUrlEncoded
     @GET("v1/forecast?hourly=temperature_2m,relativehumidity_2m,precipitation_probability,weathercode&forecast_days=2")
     suspend fun getForecast(
-        @Query("latitude") latitude: Float,
-        @Query("longitude") longitude: Float,
+        @Query("latitude") latitude: Double,
+        @Query("longitude") longitude: Double,
     ): Response<ResponseOpenMeteo>
 }
