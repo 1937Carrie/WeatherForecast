@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.stanislavdumchykov.weatherapp.R
 import com.stanislavdumchykov.weatherapp.databinding.RecyclerViewItemBinding
 import com.stanislavdumchykov.weatherapp.domain.model.ShortWeatherFormat
 import com.stanislavdumchykov.weatherapp.presentation.main.adapter.diffCallBack.ItemDiffCallBack
@@ -20,7 +21,10 @@ class RecyclerAdapter(
 
         fun bindTo(item: ShortWeatherFormat) {
             with(binding) {
-                textViewWeatherHourlyTemperature.text = "${item.temperature}°"
+                textViewWeatherHourlyTemperature.text = binding.root.context.getString(
+                    R.string.temperature_value_short,
+                    item.temperature
+                )
                 textViewWeatherHourlyDescription.text = binding.root.context.getString(
                     weatherInterpretation(item.weatherCode)
                 )

@@ -1,16 +1,19 @@
 package com.stanislavdumchykov.weatherapp.presentation.main
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.stanislavdumchykov.weatherapp.data.database.weatherForecast.WeatherForecast
 import com.stanislavdumchykov.weatherapp.data.database.weatherForecast.WeatherForecastDao
+import com.stanislavdumchykov.weatherapp.data.di.CityLocationApi
 import com.stanislavdumchykov.weatherapp.data.di.WeatherApi
 import com.stanislavdumchykov.weatherapp.domain.model.ScreenWeatherModel
 import com.stanislavdumchykov.weatherapp.domain.model.ShortWeatherFormat
 import com.stanislavdumchykov.weatherapp.domain.network.NetworkStatusTracker
 import com.stanislavdumchykov.weatherapp.domain.repository.WeatherInterpretation
+import com.stanislavdumchykov.weatherapp.domain.responseCityLocation.CityLocationItem
 import com.stanislavdumchykov.weatherapp.domain.responseOpenMeteo.ResponseOpenMeteo
 import com.stanislavdumchykov.weatherapp.domain.utils.NetworkStatus
 import com.stanislavdumchykov.weatherapp.domain.utils.Status
@@ -29,6 +32,7 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
     private val dao: WeatherForecastDao,
     private val weatherApi: WeatherApi,
+    private val cityLocationApi: CityLocationApi,
     private val weatherInterpretationData: WeatherInterpretation,
     private val networkStatusTracker: NetworkStatusTracker,
 
@@ -40,6 +44,9 @@ class MainViewModel @Inject constructor(
     val shortData: LiveData<List<ShortWeatherFormat>> = _shortData
 
     val status = MutableStateFlow(Status.LOADING)
+
+    private var _city = MutableLiveData<CityLocationItem?>()
+    val city: LiveData<CityLocationItem?> = _city
 
     init {
         viewModelScope.launch {
@@ -69,7 +76,8 @@ class MainViewModel @Inject constructor(
                 val timePoint = getRightTime(currentTime)
                 val screenWeatherModel = ScreenWeatherModel(
                     temperature = response.body()?.hourly?.temperature_2m?.get(timePoint) ?: 0.0,
-                    city = "${response.body()?.latitude}, ${response.body()?.longitude}",
+                    city = if (city.value == null) "${response.body()?.latitude}, ${response.body()?.longitude}" else city.value?.name.orEmpty(),
+                    country = if (city.value == null) "undefined" else city.value?.country.orEmpty(),
                     weatherInterpretationString = response.body()?.hourly?.weathercode?.get(
                         timePoint
                     ) ?: 0,
@@ -102,6 +110,7 @@ class MainViewModel @Inject constructor(
             val screenWeatherModel = ScreenWeatherModel(
                 temperature = cachedWeatherForecast.temperature,
                 city = cachedWeatherForecast.city,
+                country = cachedWeatherForecast.country,
                 weatherInterpretationString = cachedWeatherForecast.weatherCode,
                 windFlow = cachedWeatherForecast.windFlow,
                 precipitation = cachedWeatherForecast.precipitation,
@@ -135,10 +144,32 @@ class MainViewModel @Inject constructor(
         return weatherInterpretationData.getDescriptionByCode(weatherCode)
     }
 
+    fun getCityCoordinates(cityName: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val response = try {
+                cityLocationApi.getCityCoordinates(cityName)
+            } catch (e: IOException) {
+                return@launch
+            } catch (e: HttpException) {
+                return@launch
+            }
+
+            if (response.isSuccessful && (response.body()?.size ?: 0) > 0) {
+                Log.d("LogLog", response.body()!![0].toString())
+                _city.postValue(response.body()!![0])
+            }
+        }
+    }
+
+    fun resetCity() {
+        _city.postValue(null)
+    }
+
     private fun getWeatherForecast(body: ResponseOpenMeteo?, timePoint: Int): WeatherForecast {
         return WeatherForecast(
             temperature = body?.hourly?.temperature_2m?.get(timePoint) ?: 0.0,
-            city = "${body?.latitude}, ${body?.longitude}",
+            city = if (city.value == null) "undefined" else city.value?.name.orEmpty(),
+            country = if (city.value == null) "undefined" else city.value?.country.orEmpty(),
             weatherCode = body?.hourly?.weathercode?.get(timePoint) ?: 0,
             windFlow = body?.hourly?.windspeed_10m?.get(timePoint) ?: 0.0,
             precipitation = body?.hourly?.precipitation_probability?.get(timePoint) ?: 0,
