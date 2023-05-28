@@ -9,6 +9,7 @@ data class WeatherForecast(
     @PrimaryKey val uid: Int = 0,
     @ColumnInfo(name = "temperature") val temperature: Double,
     @ColumnInfo(name = "city") val city: String,
+    @ColumnInfo(name = "country") val country: String,
     @ColumnInfo(name = "weather_code") val weatherCode: Int,
     @ColumnInfo(name = "wind_flow") val windFlow: Double,
     @ColumnInfo(name = "precipitation") val precipitation: Int,

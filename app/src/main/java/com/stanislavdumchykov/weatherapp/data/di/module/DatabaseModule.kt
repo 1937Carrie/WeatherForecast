@@ -1,4 +1,4 @@
-package com.stanislavdumchykov.weatherapp.data.di
+package com.stanislavdumchykov.weatherapp.data.di.module
 
 import android.content.Context
 import androidx.room.Room

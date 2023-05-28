@@ -1,4 +1,4 @@
-package com.stanislavdumchykov.weatherapp.data.di
+package com.stanislavdumchykov.weatherapp.data.di.module
 
 import com.stanislavdumchykov.weatherapp.data.repository.WeatherInterpretationCodeImpl
 import com.stanislavdumchykov.weatherapp.domain.repository.WeatherInterpretation

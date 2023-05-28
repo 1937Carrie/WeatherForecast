@@ -2,14 +2,14 @@ package com.stanislavdumchykov.weatherapp.presentation.main
 
 import android.Manifest
 import android.content.pm.PackageManager
-import android.content.res.Resources
 import android.graphics.drawable.Drawable
 import android.location.Location
 import android.os.Bundle
-import android.util.Log
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.appcompat.widget.SearchView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -24,7 +24,6 @@ import com.stanislavdumchykov.weatherapp.presentation.base.BaseActivity
 import com.stanislavdumchykov.weatherapp.presentation.main.adapter.RecyclerAdapter
 import com.stanislavdumchykov.weatherapp.presentation.utils.Constants.LOCATION_PERMISSION_REQUEST_CODE
 import dagger.hilt.android.AndroidEntryPoint
-import kotlin.math.roundToInt
 
 
 @AndroidEntryPoint
@@ -44,8 +43,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        initializeSearchView()
         initializeRecyclerView()
-        Log.d("QWERT", "activity: ${binding.recyclerView.width}")
         getWeatherForecast()
     }
 
@@ -73,6 +72,10 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
 
     override fun setListeners() {
         // Swipe-to-refresh layout listener
+        swipeRefreshSetListener()
+    }
+
+    private fun swipeRefreshSetListener() {
         binding.swiperefresh.setOnRefreshListener {
             getCurrentLocation()
             binding.swiperefresh.isRefreshing = false
@@ -85,7 +88,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
             with(binding) {
                 imageViewWeatherInterpretationImage.setImageDrawable(getDrawableFromViewModel(it.weatherInterpretationString))
                 textViewDegreesCelsius.text = getString(R.string.temperature_value, it.temperature)
-                textViewCity.text = it.city
+                textViewCity.text = getString(R.string.location, it.city, it.country)
                 textViewWeatherInterpretationString.text =
                     getWeatherInterpretation(it.weatherInterpretationString)
                 textViewWindFlowValue.text = it.windFlow.toString()
@@ -93,11 +96,37 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
                     getString(R.string.precipitation_value, it.precipitation)
                 textViewHumidityValue.text = getString(R.string.humidity_value, it.humidity)
             }
+            mainViewModel.resetCity()
         }
         // Observer for data on bottom block
         mainViewModel.shortData.observe(this) {
             recyclerAdapter.submitList(it.toMutableList())
         }
+        mainViewModel.city.observe(this) { city ->
+            if (city != null) {
+                mainViewModel.getCurrentWeather(city.latitude, city.longitude)
+            }
+        }
+    }
+
+    private fun initializeSearchView() {
+        binding.imageViewSearch.setOnSearchClickListener {
+            it.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
+        }
+        binding.imageViewSearch.setOnCloseListener {
+            binding.imageViewSearch.layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
+            false
+        }
+        binding.imageViewSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                if (!query.isNullOrEmpty()) mainViewModel.getCityCoordinates(query)
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                return false
+            }
+        })
     }
 
     private fun initializeRecyclerView() {
@@ -127,7 +156,10 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
         AppCompatResources.getDrawable(
             applicationContext,
             mainViewModel.getImageByCode(weatherInterpretationCode)
-        ) ?: AppCompatResources.getDrawable(applicationContext, R.drawable.weather_code_unkown)!!
+        ) ?: AppCompatResources.getDrawable(
+            applicationContext,
+            R.drawable.weather_code_unkown
+        )!!
 
     private fun getWeatherInterpretation(weatherInterpretationCode: Int): String =
         getString(mainViewModel.getDescriptionByCode(weatherInterpretationCode)) // getString(mainViewModel.getDescriptionByCode(weatherInterpretationCode)) is to long so this method a little bit reduces it.
@@ -203,7 +235,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
     private fun requestLocationPermissions() {
         ActivityCompat.requestPermissions(
             this, arrayOf(
-                Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION
             ), LOCATION_PERMISSION_REQUEST_CODE
         )
     }
@@ -217,6 +250,3 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
     }
 
 }
-
-private val Int.dp: Int
-    get() = (this * Resources.getSystem().displayMetrics.density).roundToInt()

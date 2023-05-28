@@ -35,6 +35,7 @@
     <string name="precipitation">Precipitation</string>
     <string name="humidity">Humidity</string>
     <string name="temperature_value">%.1f°C</string>
+    <string name="location">%s, %s</string>
     <string name="precipitation_value">%d%%</string>
     <string name="humidity_value">%d%%</string>
     <string name="temperature_value_short">%.1f°</string>
